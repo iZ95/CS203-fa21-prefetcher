@@ -1,3 +1,10 @@
+/*
+ *
+ * File: prefetcher.C
+ * Author: Ligang Zou (862255201)
+ * Description: Header file for prefetcher implementation
+ *
+ */
 #include "prefetcher.h"
 #include <stdio.h>
 #include <stdlib.h>
