@@ -61,8 +61,8 @@ void Prefetcher::cpuRequest(Request req)
 	ready = true;
 	++count;
     }
-    else if(distance>0 && ((distance/L2_STEP_VALUE)<MAX_L2_BLOCK_DIST))
-    { //let the overflow deal with walkign off the end of memory
+    else if(distance>0 && ((distance/L2_STEP_VALUE)<BLOCK_DIST))
+    { 
 	nextReqAddr=lastReqAddrBlock+L2_STEP_VALUE;
 	ready = true;
     }
