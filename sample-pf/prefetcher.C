@@ -1,7 +1,7 @@
 /*
  *
  * File: prefetcher.C
- * Author: Sat Garcia (sat@cs)
+ * Author: Ligang Zou (862255201)
  * Description: This simple prefetcher waits until there is a D-cache miss then 
  * requests location (addr + 16), where addr is the address that just missed 
  * in the cache.
