@@ -10,8 +10,8 @@ struct Request;
 class Prefetcher {
   private:
 	static const u_int32_t  L1_STEP_VALUE=16;
-	static const u_int32_t  L2_STEP_VALUE=32;
-	static const int MAX_L2_BLOCK_DIST=23; //number of L2 blocks ahead of current address to fetch
+	static const u_int32_t  L2_STEP_VALUE=16;
+	static const int BLOCK_DIST=20; //number of L2 blocks ahead of current address to fetch
 	bool ready;
 	u_int32_t nextReqAddr;
 
