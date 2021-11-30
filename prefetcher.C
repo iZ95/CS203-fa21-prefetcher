@@ -1,18 +1,10 @@
-/*
- *
- * File: prefetcher.C
- * Author: Sat Garcia (sat@cs)
- * Description: This simple prefetcher waits until there is a D-cache miss then 
- * requests location (addr + 16), where addr is the address that just missed 
- * in the cache.
- *
- */
-
 #include "prefetcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <climits>
+
 int count=0;
+
 Prefetcher::Prefetcher():
     nextReqAddr(),ready()
 {
