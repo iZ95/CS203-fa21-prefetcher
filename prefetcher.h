@@ -1,17 +1,12 @@
-/*
- *
- * File: prefetcher.h
- * Author: Sat Garcia (sat@cs)
- * Description: Header file for prefetcher implementation
- *
- */
-
 #ifndef PREFETCHER_H
 #define PREFETCHER_H
 
 #include <sys/types.h>
 #include "mem-sim.h"
 #include <set>
+
+struct Request;
+
 class Prefetcher {
   private:
 	static const u_int32_t  L1_STEP_VALUE=16;
