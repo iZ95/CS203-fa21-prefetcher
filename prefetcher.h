@@ -1,3 +1,10 @@
+/*
+ *
+ * File: prefetcher.h
+ * Author: Ligang Zou (862255201)
+ * Description: Header file for prefetcher implementation
+ *
+ */
 #ifndef PREFETCHER_H
 #define PREFETCHER_H
 
