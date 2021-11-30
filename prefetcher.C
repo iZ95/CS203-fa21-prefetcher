@@ -1,43 +1,80 @@
 /*
  *
- * File: prefetcher.h
+ * File: prefetcher.C
  * Author: Sat Garcia (sat@cs)
- * Description: Header file for prefetcher implementation
+ * Description: This simple prefetcher waits until there is a D-cache miss then 
+ * requests location (addr + 16), where addr is the address that just missed 
+ * in the cache.
  *
  */
 
-#ifndef PREFETCHER_H
-#define PREFETCHER_H
+#include "prefetcher.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <climits>
+int count=0;
+Prefetcher::Prefetcher():
+    nextReqAddr(),ready()
+{
+}
 
-#include <sys/types.h>
-#include "mem-sim.h"
-#include <set>
-class Prefetcher {
-  private:
-	static const u_int32_t  L1_STEP_VALUE=16;
-	static const u_int32_t  L2_STEP_VALUE=32;
-	static const int MAX_L2_BLOCK_DIST=23; //number of L2 blocks ahead of current address to fetch
-	bool ready;
-	u_int32_t nextReqAddr;
+u_int32_t Prefetcher::blockStartAddr(u_int32_t addr,int size)
+{
+    return addr/size*size;
+}
+// should return true if a request is ready for this cycle
 
-	u_int32_t blockStartAddr(u_int32_t addr, int size);
-  public:
-	Prefetcher();
+bool Prefetcher::hasRequest(u_int32_t cycle)
+{
+    return ready;
+}
 
-	// should return true if a request is ready for this cycle
-	bool hasRequest(u_int32_t cycle);
+// request a desired address be brought in
+/*
+ * NOTES: u_int32_t cycle will always be the same as it was in hasRequest
+ */
 
-	// request a desired address be brought in
-	Request getRequest(u_int32_t cycle);
+Request Prefetcher::getRequest(u_int32_t cycle)
+{
+    Request nextReq={};
+    nextReq.addr=nextReqAddr;
+    return nextReq;
+}
 
-	// this function is called whenever the last prefetcher request was successfully sent to the L2
-	void completeRequest(u_int32_t cycle);
+// this function is called whenever the last prefetcher request was successfully sent to the L2
+//only doesn't get sent if the L2 queue is full!
+void Prefetcher::completeRequest(u_int32_t cycle)
+{
+    ready = false;
+}
 
-	/*
-	 * This function is called whenever the CPU references memory.
-	 * Note that only the addr, pc, load, issuedAt, and HitL1 should be considered valid data
-	 */
-	void cpuRequest(Request req); 
-};
+/*
+ * This function is called whenever the CPU references memory.
+ * Note that only the addr, pc, load, fromCPU, issuedAt, and HitL1 should be considered valid data
+ */
+void Prefetcher::cpuRequest(Request req)
+{
 
-#endif
+    if(ready || !req.fromCPU)
+	return;
+
+    u_int32_t reqAddrBlock= blockStartAddr(req.addr,L1_STEP_VALUE);
+    u_int32_t lastReqAddrBlock=blockStartAddr(this->nextReqAddr,L1_STEP_VALUE);
+    int distance=lastReqAddrBlock-reqAddrBlock;
+    //If the CPU didn't hit in L1 we have mispredicted
+    if(!req.HitL1)
+    {
+
+	nextReqAddr = reqAddrBlock + L2_STEP_VALUE;
+	ready = true;
+	++count;
+    }
+    else if(distance>0 && ((distance/L2_STEP_VALUE)<MAX_L2_BLOCK_DIST))
+    { //let the overflow deal with walkign off the end of memory
+	nextReqAddr=lastReqAddrBlock+L2_STEP_VALUE;
+	ready = true;
+    }
+
+
+
+}
