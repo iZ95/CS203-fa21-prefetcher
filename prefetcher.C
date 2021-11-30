@@ -2,7 +2,9 @@
  *
  * File: prefetcher.C
  * Author: Ligang Zou (862255201)
- * Description: Header file for prefetcher implementation
+ * Description: This simple prefetcher waits until there is a D-cache miss then 
+ * requests location (addr + 16), where addr is the address that just missed 
+ * in the cache.
  *
  */
 #include "prefetcher.h"
